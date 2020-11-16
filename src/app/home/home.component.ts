@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private dialog: MatDialog,
+
     private courseService: CourseService
   ) {}
 
@@ -49,17 +49,5 @@ export class HomeComponent implements OnInit {
         courses.filter((course) => course.category == "ADVANCED")
       )
     );
-  }
-
-  editCourse(course: Course) {
-    const dialogConfig = new MatDialogConfig();
-
-    dialogConfig.disableClose = true;
-    dialogConfig.autoFocus = true;
-    dialogConfig.width = "400px";
-
-    dialogConfig.data = course;
-
-    const dialogRef = this.dialog.open(CourseDialogComponent, dialogConfig);
   }
 }
