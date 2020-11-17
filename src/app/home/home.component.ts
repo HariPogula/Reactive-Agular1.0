@@ -34,6 +34,10 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+    this.reloadCourses();
+  }
+
+  reloadCourses() {
     const courses$ = this.courseService
       .getAllCourses()
       .pipe(map((courses) => courses.sort(sortCoursesBySeqNo)));
