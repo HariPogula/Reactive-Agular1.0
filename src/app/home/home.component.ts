@@ -16,6 +16,9 @@ import { HttpClient } from "@angular/common/http";
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { CourseDialogComponent } from "../course-dialog/course-dialog.component";
 import { CourseService } from "../services/course.service";
+import { LoadingService } from "../services/loading.service";
+import { MessageService } from "../services/message.service";
+import { CourseStoreService } from "../services/course-store.service";
 
 @Component({
   selector: "home",
@@ -29,8 +32,10 @@ export class HomeComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-
-    private courseService: CourseService
+    private loadingService: LoadingService,
+    private courseService: CourseService,
+    private courseStore: CourseStoreService,
+    private messageService: MessageService
   ) {}
 
   ngOnInit() {
@@ -38,17 +43,28 @@ export class HomeComponent implements OnInit {
   }
 
   reloadCourses() {
-    const courses$ = this.courseService
-      .getAllCourses()
-      .pipe(map((courses) => courses.sort(sortCoursesBySeqNo)));
+    this.beginnerCourses$ = this.courseStore.filterByCategory("BEGINNER");
+    this.advancedCourses$ = this.courseStore.filterByCategory("ADVANCED");
+  }
+  reloadCourseswithoutStore() {
+    const courses$ = this.courseService.getAllCourses().pipe(
+      map((courses) => courses.sort(sortCoursesBySeqNo)),
+      catchError((err) => {
+        const message = "Could not Load Services";
+        this.messageService.showErrors(message);
+        return throwError(err);
+      })
+    );
 
-    this.beginnerCourses$ = courses$.pipe(
+    const loadCourses$ = this.loadingService.showLoaderuntilCompleted(courses$);
+
+    this.beginnerCourses$ = loadCourses$.pipe(
       map((courses) =>
         courses.filter((course) => course.category == "BEGINNER")
       )
     );
 
-    this.advancedCourses$ = courses$.pipe(
+    this.advancedCourses$ = loadCourses$.pipe(
       map((courses) =>
         courses.filter((course) => course.category == "ADVANCED")
       )
