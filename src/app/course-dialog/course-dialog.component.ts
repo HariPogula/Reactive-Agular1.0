@@ -16,6 +16,7 @@ import { throwError } from "rxjs";
 import { CourseService } from "../services/course.service";
 import { LoadingService } from "../services/loading.service";
 import { MessageService } from "../services/message.service";
+import { CourseStoreService } from "../services/course-store.service";
 
 @Component({
   selector: "course-dialog",
@@ -34,6 +35,7 @@ export class CourseDialogComponent implements AfterViewInit {
     private courseService: CourseService,
     private loadingService: LoadingService,
     private messageService: MessageService,
+    private courseStore: CourseStoreService,
     @Inject(MAT_DIALOG_DATA) course: Course
   ) {
     this.course = course;
@@ -49,6 +51,11 @@ export class CourseDialogComponent implements AfterViewInit {
   ngAfterViewInit() {}
 
   save() {
+    const changes = this.form.value;
+    this.courseStore.saveCourse(this.course.id, changes).subscribe();
+    this.dialogRef.close(changes);
+  }
+  savewithoutStore() {
     const changes = this.form.value;
     const saveCourse$ = this.courseService
       .saveCourse(this.course.id, changes)

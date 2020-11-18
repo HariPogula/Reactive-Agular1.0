@@ -18,6 +18,7 @@ import { CourseDialogComponent } from "../course-dialog/course-dialog.component"
 import { CourseService } from "../services/course.service";
 import { LoadingService } from "../services/loading.service";
 import { MessageService } from "../services/message.service";
+import { CourseStoreService } from "../services/course-store.service";
 
 @Component({
   selector: "home",
@@ -33,6 +34,7 @@ export class HomeComponent implements OnInit {
     private http: HttpClient,
     private loadingService: LoadingService,
     private courseService: CourseService,
+    private courseStore: CourseStoreService,
     private messageService: MessageService
   ) {}
 
@@ -41,6 +43,10 @@ export class HomeComponent implements OnInit {
   }
 
   reloadCourses() {
+    this.beginnerCourses$ = this.courseStore.filterByCategory("BEGINNER");
+    this.advancedCourses$ = this.courseStore.filterByCategory("ADVANCED");
+  }
+  reloadCourseswithoutStore() {
     const courses$ = this.courseService.getAllCourses().pipe(
       map((courses) => courses.sort(sortCoursesBySeqNo)),
       catchError((err) => {

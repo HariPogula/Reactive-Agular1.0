@@ -6,14 +6,15 @@
     <mat-tab-group>
 
         <mat-tab label="Beginners">
-
-          <course-card-list [courses]="beginnerCourses$|async" (coursesChanged)="reloadCourses()" ></course-card-list>
+          <!-- (coursesChanged)="reloadCourses()" -->
+          <course-card-list [courses]="beginnerCourses$|async"  ></course-card-list>
 
         </mat-tab>
 
         <mat-tab label="Advanced">
+          <!-- (coursesChanged)="reloadCourses()" -->
 
-          <course-card-list [courses]="advancedCourses$|async" (coursesChanged)="reloadCourses()"  ></course-card-list>
+          <course-card-list [courses]="advancedCourses$|async"   ></course-card-list>
 
         </mat-tab>
 
